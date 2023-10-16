@@ -1,0 +1,13 @@
+{
+  "name": "discord_hungry_muto",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.11.0"
+  }
+}
