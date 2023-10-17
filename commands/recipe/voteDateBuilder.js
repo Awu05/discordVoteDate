@@ -50,7 +50,8 @@ module.exports = {
             const timeArray = [];
             let emojiIndex = 0;
             var result = new Date(date);
-            if(i > 0) result.setDate(result.getDate() + i);
+            result.setDate(result.getDate() + i);
+            result.setHours(result.getHours() + 20);
 
             for (let j = start; j < end; j += interval) {
                 timeArray.push(

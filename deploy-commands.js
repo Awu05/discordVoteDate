@@ -3,8 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const clientId = process.env.CLIENT_ID;
-const guildId = process.env.GUILD_ID;
 const token = process.env.TOKEN;
+// const guildId = process.env.GUILD_ID;
 
 const commands = [];
 // Grab all the command files from the commands directory you created earlier
