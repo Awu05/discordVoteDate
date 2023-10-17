@@ -53,7 +53,7 @@ module.exports = {
             result.setDate(result.getDate() + i);
             result.setHours(result.getHours() + 20);
 
-            for (let j = start; j < end; j += interval) {
+            for (let j = start; j <= end; j += interval) {
                 timeArray.push(
                     {
                         name: j < 0 ? `R ${j} ${emotes[emojiIndex]}` : `R + ${j} ${emotes[emojiIndex]}`,
