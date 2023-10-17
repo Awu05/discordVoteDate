@@ -64,7 +64,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle(`<t:${Math.floor(result.getTime() / 1000)}:F>`)
+                .setTitle(`<t:${Math.floor(result.getTime() / 1000)}:D>`)
                 .setColor(0x0099FF)
                 .setDescription('Please vote on a time!')
                 .setTimestamp(Date.now())
