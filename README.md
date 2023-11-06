@@ -21,7 +21,6 @@ But it can be adapted to be used for other things or in other games too.
 
 * Clone the repo `git clone https://github.com/Awu05/discordVoteDate.git`
 * Go into the repo you just cloned `cd discordVoteDate`
-* Make sure docker is installed and running and type `docker build . -t discord-voate-date` to build the docker container
 * Modify the docker-compose2.yaml file and fill in the missing fields: "TOKEN" and "CLIENT_ID". You will also need to rename the docker-compose2.yaml file to `docker-compose.yaml`
   * You can find the token and client_id by creating a discord developer account and then creating a new bot.
 * Once you have updated the docker-compose file, you can run the docker-compose with `docker-compose up -d` to start the docker container.
