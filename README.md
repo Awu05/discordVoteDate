@@ -2,7 +2,8 @@
 
 A discord bot to help people decide on a date and time to do an activity. The bot can only display a max of 10 options.
 
-![image](https://github.com/Awu05/discordVoteDate/assets/12676790/a0e0200a-a9cc-4794-9d2a-21614e910dbb)
+![image](https://github.com/Awu05/discordVoteDate/assets/12676790/d886b857-50d9-459e-a26a-0bdf24a26918)
+
 
 
 ## Description
