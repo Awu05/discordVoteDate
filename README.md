@@ -1,4 +1,4 @@
-# discordVoteDate
+# Discord Date Votter
 
 A discord bot to help people decide on a date and time to do an activity. The bot can only display a max of 10 options.
 
