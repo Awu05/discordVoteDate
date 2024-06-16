@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const emotes = [
+    '0️⃣',
     '1️⃣',
     '2️⃣',
     '3️⃣',
@@ -71,10 +72,10 @@ module.exports = {
                 .setTimestamp(Date.now())
                 .addFields(timeArray);
 
-            const message = i === 0 ? 
-                await interaction.reply({ embeds: [embed], fetchReply: true }) : 
+            const message = i === 0 ?
+                await interaction.reply({ embeds: [embed], fetchReply: true }) :
                 await interaction.followUp({ embeds: [embed], fetchReply: true });
-            for(let k = 0; k < emojiIndex; k++) {
+            for (let k = 0; k < emojiIndex; k++) {
                 message.react(emotes[k]);
             }
         }
