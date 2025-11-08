@@ -39,6 +39,8 @@ module.exports = {
                 .setDescription('Set consecutive days. Sets one day if not specified.'))
     ,
     async execute(interaction) {
+        await interaction.deferReply();
+
         const date = interaction.options.getString('date');
         const start = parseFloat(interaction.options.getString('start'));
         const end = parseFloat(interaction.options.getString('end'));
@@ -50,17 +52,15 @@ module.exports = {
         for (let i = 0; i < consecutiveDays; i++) {
             const timeArray = [];
             let emojiIndex = 0;
-            var result = new Date(date);
+            const result = new Date(date);
             result.setDate(result.getDate() + i);
             result.setHours(result.getHours() + 20);
 
             for (let j = start; j <= end; j += interval) {
-                timeArray.push(
-                    {
-                        name: j < 0 ? `R ${j} ${emotes[emojiIndex]}` : `R + ${j} ${emotes[emojiIndex]}`,
-                        value: ' '
-                    }
-                );
+                timeArray.push({
+                    name: j < 0 ? `R ${j} ${emotes[emojiIndex]}` : `R + ${j} ${emotes[emojiIndex]}`,
+                    value: ' '
+                });
                 emojiIndex++;
                 if (emojiIndex >= 10) break;
             }
@@ -72,12 +72,13 @@ module.exports = {
                 .setTimestamp(Date.now())
                 .addFields(timeArray);
 
-            const message = i === 0 ?
-                await interaction.reply({ embeds: [embed], fetchReply: true }) :
-                await interaction.followUp({ embeds: [embed], fetchReply: true });
+            const message = await interaction.followUp({ embeds: [embed], fetchReply: true });
+
             for (let k = 0; k < emojiIndex; k++) {
-                message.react(emotes[k]);
+                await message.react(emotes[k]);
             }
         }
-    },
+
+        await interaction.editReply({ content: "Voting messages created!" });
+    }
 };

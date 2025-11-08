@@ -1,8 +1,12 @@
 FROM node:20-alpine
 
-RUN apk add --no-cache curl yarn
+RUN apk update && apk upgrade && apk add --no-cache curl yarn git
 
 COPY . .
+
+# RUN git clone https://github.com/Awu05/discordVoteDate.git
+
+# WORKDIR /discordVoteDate
 
 RUN yarn install
 
