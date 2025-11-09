@@ -1,82 +1,72 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
-const emotes = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('votedate')
         .setDescription('Replies with dates to vote on!')
-        .addStringOption(opt => opt.setName('date').setDescription('Month/Day/Year OR Year/Month/Day').setRequired(true))
-        .addStringOption(opt => opt.setName('start').setDescription('Set the start time!').setRequired(true))
-        .addStringOption(opt => opt.setName('end').setDescription('Set the end time!').setRequired(true))
-        .addStringOption(opt => opt.setName('interval').setDescription('Set the interval time!').setRequired(true))
-        .addStringOption(opt => opt.setName('consecutive-days').setDescription('Set consecutive days. Sets one day if not specified.')),
+        .addStringOption(opt =>
+            opt.setName('date')
+                .setDescription('Month/Day/Year or Year/Month/Day')
+                .setRequired(true))
+        .addStringOption(opt =>
+            opt.setName('start')
+                .setDescription('Start time')
+                .setRequired(true))
+        .addStringOption(opt =>
+            opt.setName('end')
+                .setDescription('End time')
+                .setRequired(true))
+        .addStringOption(opt =>
+            opt.setName('interval')
+                .setDescription('Interval time')
+                .setRequired(true))
+        .addStringOption(opt =>
+            opt.setName('consecutive-days')
+                .setDescription('Number of consecutive days (default 1)')),
 
     async execute(interaction) {
-        console.log('Interaction received:', interaction.commandName, Date.now());
-
-        // Immediately acknowledge to Discord
-        try {
-            await interaction.deferReply({ ephemeral: false });
-        } catch (err) {
-            console.error("Failed to defer:", err);
-            return;
-        }
+        // 🚨 MUST happen within 3 s — put it at the very top!
+        await interaction.deferReply(); // public response
 
         try {
             const date = interaction.options.getString('date');
             const start = parseFloat(interaction.options.getString('start'));
             const end = parseFloat(interaction.options.getString('end'));
             const interval = parseFloat(interaction.options.getString('interval'));
-            let consecutiveDays = parseInt(interaction.options.getString('consecutive-days')) || 1;
-            if (consecutiveDays <= 0) consecutiveDays = 1;
+            let consecutiveDays = parseInt(interaction.options.getString('consecutive-days') || '1', 10);
+
+            const emotes = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
+
+            // optional quick feedback
+            await interaction.editReply(`Generating ${consecutiveDays} vote embed(s)…`);
 
             for (let i = 0; i < consecutiveDays; i++) {
-                const timeArray = [];
-                let emojiIndex = 0;
-
                 const result = new Date(date);
                 result.setDate(result.getDate() + i);
-                result.setHours(result.getHours() + 20);
 
-                for (let j = start; j <= end; j += interval) {
-                    timeArray.push({
-                        name: j < 0 ? `R ${j} ${emotes[emojiIndex]}` : `R + ${j} ${emotes[emojiIndex]}`,
-                        value: ' '
-                    });
-                    emojiIndex++;
-                    if (emojiIndex >= 10) break;
+                const fields = [];
+                for (let j = start, k = 0; j <= end && k < emotes.length; j += interval, k++) {
+                    fields.push({ name: `Option ${emotes[k]}`, value: `${j}`, inline: true });
                 }
 
                 const embed = new EmbedBuilder()
                     .setTitle(`<t:${Math.floor(result.getTime() / 1000)}:D>`)
-                    .setColor(0x0099FF)
-                    .setDescription('Please vote on a time!')
-                    .setTimestamp()
-                    .addFields(timeArray);
+                    .setColor('Blue')
+                    .addFields(fields);
 
-                const message = await interaction.followUp({ embeds: [embed], fetchReply: true });
-
-                // 2️⃣ React concurrently instead of one by one
-                await Promise.all(
-                    emotes.slice(0, emojiIndex).map(e => message.react(e))
-                );
+                const msg = await interaction.followUp({ embeds: [embed] });
+                for (const e of emotes.slice(0, fields.length)) msg.react(e).catch(console.error);
             }
 
-            await interaction.editReply({ content: 'Voting messages created!' });
+            await interaction.followUp({ content: '✅ All vote messages created!', flags: 64 });
 
         } catch (err) {
-            console.error('Command error:', err);
+            console.error('VoteDate error:', err);
 
-            // 3️⃣ Handle reply safely depending on state
-            try {
-                if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply({ content: 'There was an error executing this command.' });
-                } else {
-                    await interaction.reply({ content: 'There was an error executing this command.', ephemeral: true });
-                }
-            } catch (replyErr) {
-                console.error('Error while sending error message:', replyErr);
+            if (interaction.deferred || interaction.replied) {
+                await interaction.followUp({ content: 'There was an error executing the command.', flags: 64 }).catch(() => { });
+            } else {
+                await interaction.reply({ content: 'There was an error executing the command.', flags: 64 }).catch(() => { });
             }
         }
     },
